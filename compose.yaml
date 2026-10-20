@@ -1,0 +1,88 @@
+# Docker Compose for Tensor Observatory
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: tensor-observatory-backend
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      - APP_ENV=development
+      - DEBUG=true
+      - DATABASE_URL=sqlite+aiosqlite:///./data/tensor_observatory.db
+      - KEYCLOAK_SERVER_URL=http://keycloak:8080
+      - KEYCLOAK_REALM=tensor-observatory
+      - KEYCLOAK_CLIENT_ID=tensor-observatory-backend
+      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET:-}
+      - KEYCLOAK_REDIRECT_URI=http://localhost:8000/auth/callback
+      - SESSION_SECRET_KEY=${SESSION_SECRET_KEY:-dev-secret-change-in-production}
+      - CSRF_SECRET_KEY=${CSRF_SECRET_KEY:-dev-csrf-secret-change-in-production}
+      - SESSION_COOKIE_SECURE=false
+      - SESSION_COOKIE_SAMESITE=lax
+      - DEMO_MODE=false
+    volumes:
+      - backend_data:/app/data
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/api/health/ready', timeout=5).raise_for_status()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - tensor-observatory-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: tensor-observatory-frontend
+    ports:
+      - "127.0.0.1:5173:5173"
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5173/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - tensor-observatory-network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0
+    container_name: tensor-observatory-keycloak
+    command: start-dev
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
+      - KC_DB=dev-file
+      - KC_HOSTNAME=localhost
+      - KC_HOSTNAME_PORT=8080
+      - KC_HOSTNAME_STRICT_HTTPS=false
+      - KC_HTTP_ENABLED=true
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+    networks:
+      - tensor-observatory-network
+
+volumes:
+  backend_data:
+  keycloak_data:
+
+networks:
+  tensor-observatory-network:
+    driver: bridge

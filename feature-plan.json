@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "current_feature": "skeleton",
+  "features": [
+    {
+      "id": "skeleton",
+      "title": "FastAPI/React skeleton with Docker, CI, and auth baseline",
+      "status": "in_progress",
+      "acceptance": [
+        "Backend FastAPI app starts and serves /health endpoint",
+        "Frontend React/Vite app builds and serves",
+        "Docker compose brings up backend, frontend, Keycloak, and SQLite",
+        "CI workflow runs backend tests, frontend build/test, and Docker builds",
+        "OIDC Keycloak auth with PKCE flow implemented (backend sessions + HttpOnly cookies)",
+        "SQLite persistence with migrations",
+        "README with install/run/test steps"
+      ],
+      "implementation": [],
+      "tests": []
+    },
+    {
+      "id": "model-registry",
+      "title": "Model registry with metadata, search, and import workflow",
+      "status": "planned",
+      "acceptance": [
+        "API: CRUD for model records (name, architecture, quantization, hardware profile)",
+        "UI: Model list with filtering, detail view, create/import modal",
+        "Import from HuggingFace Hub (metadata only, no weights)",
+        "Persistent storage with audit log"
+      ],
+      "implementation": [],
+      "tests": []
+    },
+    {
+      "id": "inference-benchmark",
+      "title": "Inference benchmark engine (offline, deterministic)",
+      "status": "planned",
+      "acceptance": [
+        "Core engine: token throughput, latency (TTFT, TPOT), memory tracking",
+        "Runs without LLM key (deterministic synthetic workload)",
+        "API: start benchmark, poll status, fetch results",
+        "UI: Benchmark dashboard with charts from real API data",
+        "Export results (JSON/CSV)"
+      ],
+      "implementation": [],
+      "tests": []
+    },
+    {
+      "id": "hardware-profiling",
+      "title": "Hardware capability detection and profiling",
+      "status": "planned",
+      "acceptance": [
+        "Detect GPU arch (SM version), VRAM, driver/CUDA version",
+        "Profile kernel compatibility for target models",
+        "API/UX: hardware profile CRUD, compatibility matrix"
+      ],
+      "implementation": [],
+      "tests": []
+    },
+    {
+      "id": "llm-advisory",
+      "title": "Opt-in LLM advisory explanations",
+      "status": "planned",
+      "acceptance": [
+        "Configurable provider (OpenAI-compatible, Anthropic, Gemini, Ollama)",
+        "Advisory badge on all LLM outputs",
+        "Grounded in actual benchmark/hardware records",
+        "Clear provider errors, no fabricated responses"
+      ],
+      "implementation": [],
+      "tests": []
+    }
+  ]
+}
