@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "name": "tensor-observatory-alan-vo",
+  "owner": "ALANDVO",
+  "email": "alanvo@gmail.com",
+  "domain": "AI/ML developer tools",
+  "summary": "Work in progress: tensor-observatory-alan-vo",
+  "workflows": [
+    "Register and import LLM model metadata (architecture, quantization, hardware targets) from HuggingFace Hub",
+    "Run deterministic synthetic inference benchmarks measuring token throughput, TTFT, TPOT, and memory without external API keys",
+    "Profile GPU hardware capabilities (SM version, VRAM, driver/CUDA) and track model-hardware compatibility matrices"
+  ],
+  "auth": "oidc-keycloak-saml-broker",
+  "llm_providers": [
+    "openai-compatible",
+    "anthropic",
+    "gemini",
+    "ollama"
+  ],
+  "status": "work-in-progress"
+}
