@@ -1,5 +1,6 @@
 """Authentication endpoints: login, callback, logout, me."""
 
+from typing import Optional
 from fastapi import APIRouter, Request, Response, Depends, HTTPException, status
 from fastapi.responses import RedirectResponse
 from urllib.parse import urlencode
@@ -194,7 +195,7 @@ async def callback(
 async def logout(
     request: Request,
     response: Response,
-    session: SessionData = Depends(get_current_session),
+    session: Optional[SessionData] = Depends(get_current_session),
     db: AsyncSession = Depends(get_db),
 ) -> dict:
     """Logout: delete session, clear cookies, redirect to Keycloak logout."""
@@ -202,14 +203,15 @@ async def logout(
     if session_id:
         await delete_session(session_id)
 
-    await log_audit(
-        db,
-        action="logout",
-        user_id=session.user_id,
-        ip_address=get_client_ip(request),
-        user_agent=get_user_agent(request),
-    )
-    await db.commit()
+    if session:
+        await log_audit(
+            db,
+            action="logout",
+            user_id=session.user_id,
+            ip_address=get_client_ip(request),
+            user_agent=get_user_agent(request),
+        )
+        await db.commit()
 
     # Clear cookies
     response.delete_cookie(SESSION_COOKIE_NAME, path="/", httponly=True, secure=settings.session_cookie_secure, samesite=settings.session_cookie_samesite)

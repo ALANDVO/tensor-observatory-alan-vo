@@ -10,7 +10,7 @@ skeleton
 
 ### skeleton — FastAPI/React skeleton with Docker, CI, and auth baseline
 
-Status: in_progress
+Status: done
 
 Acceptance:
 - Backend FastAPI app starts and serves /health endpoint
@@ -20,6 +20,10 @@ Acceptance:
 - OIDC Keycloak auth with PKCE flow implemented (backend sessions + HttpOnly cookies)
 - SQLite persistence with migrations
 - README with install/run/test steps
+
+Implementation: `backend/app/main.py`, `backend/app/core/config.py`, `backend/app/core/database.py`, `backend/app/core/auth.py`, `backend/app/api/health.py`, `backend/app/api/auth.py`, `backend/app/api/models.py`, `backend/app/api/benchmarks.py`, `backend/app/api/hardware.py`, `backend/app/api/deps.py`, `backend/app/models/__init__.py`, `frontend/src/App.tsx`, `frontend/src/api/client.ts`, `frontend/src/pages/Dashboard.tsx`, `frontend/src/pages/Models.tsx`, `frontend/src/pages/Benchmarks.tsx`, `frontend/src/pages/Hardware.tsx`, `frontend/src/pages/Settings.tsx`, `frontend/src/pages/LoginCallback.tsx`, `frontend/src/components/Layout.tsx`, `frontend/src/hooks/useAuth.ts`, `compose.yaml`, `.github/workflows/ci.yml`
+
+Tests: `backend/tests/test_all.py`
 
 ### model-registry — Model registry with metadata, search, and import workflow
 

@@ -1,17 +1,60 @@
 # Backend tests
+import os
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
+from sqlalchemy.pool import StaticPool
 
 from app.main import create_app
-from app.core.database import AsyncSessionLocal, Base, engine
+from app.core.database import Base
 from app.models import Model, Benchmark, HardwareProfile, ModelHardwareCompatibility, log_audit
+from app.core.config import get_settings
+
+# Override database URL for tests to use in-memory SQLite
+os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///:memory:"
+
+# Create test engine with in-memory SQLite
+test_engine: AsyncEngine = create_async_engine(
+    "sqlite+aiosqlite:///:memory:",
+    echo=False,
+    future=True,
+    poolclass=StaticPool,
+    connect_args={"check_same_thread": False},
+)
+
+TestAsyncSessionLocal = async_sessionmaker(
+    test_engine,
+    class_=AsyncSession,
+    expire_on_commit=False,
+    autoflush=False,
+    autocommit=False,
+)
+
+settings = get_settings()
 
 
 @pytest.fixture(scope="session")
 def app():
     app = create_app()
+    
+    # Override get_db dependency for tests
+    from app.core.database import get_db
+    
+    async def override_get_db():
+        async with TestAsyncSessionLocal() as session:
+            try:
+                yield session
+            finally:
+                await session.close()
+    
+    app.dependency_overrides[get_db] = override_get_db
+    
     return app
 
 
@@ -24,16 +67,15 @@ async def client(app):
 @pytest_asyncio.fixture(scope="function")
 async def db_session():
     """Create a fresh database for each test."""
-    async with engine.begin() as conn:
+    async with test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
-    
-    async with AsyncSessionLocal() as session:
-        yield session
-    
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
 
+    async with TestAsyncSessionLocal() as session:
+        yield session
+
+    async with test_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
 
 class TestHealth:
     @pytest.mark.asyncio
@@ -82,10 +124,12 @@ class TestAuth:
         assert resp.status_code == 400
 
     @pytest.mark.asyncio
-    async def test_logout_requires_auth(self, client):
-        """Logout should require authentication."""
+    async def test_logout_idempotent(self, client):
+        """Logout should be idempotent (succeed even if not logged in)."""
         resp = await client.post("/api/auth/logout")
-        assert resp.status_code == 401
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "logout_url" in data
 
 
 class TestModels:

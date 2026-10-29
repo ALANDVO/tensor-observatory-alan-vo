@@ -5,7 +5,7 @@
     {
       "id": "skeleton",
       "title": "FastAPI/React skeleton with Docker, CI, and auth baseline",
-      "status": "in_progress",
+      "status": "done",
       "acceptance": [
         "Backend FastAPI app starts and serves /health endpoint",
         "Frontend React/Vite app builds and serves",
@@ -15,8 +15,34 @@
         "SQLite persistence with migrations",
         "README with install/run/test steps"
       ],
-      "implementation": [],
-      "tests": []
+      "implementation": [
+        "backend/app/main.py",
+        "backend/app/core/config.py",
+        "backend/app/core/database.py",
+        "backend/app/core/auth.py",
+        "backend/app/api/health.py",
+        "backend/app/api/auth.py",
+        "backend/app/api/models.py",
+        "backend/app/api/benchmarks.py",
+        "backend/app/api/hardware.py",
+        "backend/app/api/deps.py",
+        "backend/app/models/__init__.py",
+        "frontend/src/App.tsx",
+        "frontend/src/api/client.ts",
+        "frontend/src/pages/Dashboard.tsx",
+        "frontend/src/pages/Models.tsx",
+        "frontend/src/pages/Benchmarks.tsx",
+        "frontend/src/pages/Hardware.tsx",
+        "frontend/src/pages/Settings.tsx",
+        "frontend/src/pages/LoginCallback.tsx",
+        "frontend/src/components/Layout.tsx",
+        "frontend/src/hooks/useAuth.ts",
+        "compose.yaml",
+        ".github/workflows/ci.yml"
+      ],
+      "tests": [
+        "backend/tests/test_all.py"
+      ]
     },
     {
       "id": "model-registry",
