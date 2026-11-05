@@ -1,10 +1,7 @@
-import { Cpu, Box, Database, TrendingUp, Clock, MemoryStick } from 'lucide-react';
+import { Cpu, Box, Database, TrendingUp } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { getHealth, getModels, getBenchmarks, getHardwareProfiles } from '../api/client';
-import { Loading } from '../components/Loading';
-import { ErrorState } from '../components/ErrorState';
 import { EmptyState } from '../components/EmptyState';
-
 const statCards = [
   { name: 'Models', key: 'models', icon: Box, color: 'text-blue-600 bg-blue-50 dark:bg-blue-900/30' },
   { name: 'Benchmarks', key: 'benchmarks', icon: Cpu, color: 'text-green-600 bg-green-50 dark:bg-green-900/30' },
@@ -78,7 +75,7 @@ export function Dashboard() {
             />
           ) : (
             <div className="space-y-3">
-              {benchmarks.items.slice(0, 5).map((b) => (
+              {benchmarks?.items.slice(0, 5).map((b) => (
                 <div key={b.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
