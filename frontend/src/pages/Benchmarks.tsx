@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Play, Trash2, Download, Eye, RotateCcw } from 'lucide-react';
+import { Plus, Play, Trash2, Eye, RotateCcw } from 'lucide-react';
 import { getBenchmarks, createBenchmark, deleteBenchmark } from '../api/client';
 import { getModels } from '../api/client';
 import { Loading } from '../components/Loading';
 import { ErrorState } from '../components/ErrorState';
 import { EmptyState } from '../components/EmptyState';
-import { Benchmark, BenchmarkCreate, Model } from '../types/api';
+import { BenchmarkCreate } from '../types/api';
 import clsx from 'clsx';
 
 const WORKLOAD_TYPES = [

@@ -1,5 +1,6 @@
-import { LayoutDashboard, Box, Cpu, Database, Settings, LogOut, User, Menu, X } from 'lucide-react';
-import { Link, useLocation, NavLink } from 'react-router-dom';
+import React from 'react';
+import { LayoutDashboard, Box, Cpu, Database, Settings, LogOut, User, X } from 'lucide-react';
+import { Link, NavLink } from 'react-router-dom';
 import { useAuthStore } from '../hooks/useAuth';
 import { logout } from '../api/client';
 import clsx from 'clsx';
@@ -13,7 +14,6 @@ const navigation = [
 ];
 
 export function Sidebar() {
-  const location = useLocation();
   const { user, logout: logoutStore } = useAuthStore();
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -104,19 +104,10 @@ export function Sidebar() {
 
 export function Header() {
   const { user } = useAuthStore();
-  const [isOpen, setIsOpen] = React.useState(false);
 
   return (
     <header className="sticky top-0 z-30 h-16 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 lg:ml-64">
       <div className="flex items-center justify-between h-full px-4 lg:px-6">
-        <button
-          className="lg:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
-          onClick={() => setIsOpen(true)}
-          aria-label="Open sidebar"
-        >
-          <Menu className="h-6 w-6" />
-        </button>
-
         <div className="flex-1 lg:flex-none" />
 
         <div className="flex items-center gap-4">
@@ -135,8 +126,7 @@ export function Header() {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading } = useAuthStore();
-
+  const { isLoading } = useAuthStore();
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -156,6 +146,4 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-// Need to import React
-import React from 'react';
 import { Loading } from './Loading';

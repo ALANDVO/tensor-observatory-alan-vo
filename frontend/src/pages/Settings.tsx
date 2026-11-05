@@ -1,4 +1,4 @@
-import { Shield, Key, Database, Cpu, Bell, Moon, Sun } from 'lucide-react';
+import { Shield, Key, Cpu, Bell } from 'lucide-react';
 import { useAuthStore } from '../hooks/useAuth';
 import { logout } from '../api/client';
 

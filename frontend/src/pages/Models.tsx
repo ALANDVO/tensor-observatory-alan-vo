@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Search, Download, Upload, Edit, Trash2, ExternalLink } from 'lucide-react';
+import { Plus, Search, Download, Trash2, ExternalLink } from 'lucide-react';
 import { getModels, createModel, deleteModel, importModelFromHuggingFace } from '../api/client';
 import { Loading } from '../components/Loading';
 import { ErrorState } from '../components/ErrorState';
 import { EmptyState } from '../components/EmptyState';
-import { Model, ModelCreate } from '../types/api';
-
+import { ModelCreate } from '../types/api';
 export function Models() {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState('');

@@ -1,7 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { LoadingFullScreen } from './components/Loading';
-import { ErrorState } from './components/ErrorState';
 import { useAuthStore } from './hooks/useAuth';
 import { getMe, getCsrfToken } from './api/client';
 import { useEffect } from 'react';

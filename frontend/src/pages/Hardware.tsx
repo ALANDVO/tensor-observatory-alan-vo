@@ -5,12 +5,11 @@ import { getHardwareProfiles, createHardwareProfile } from '../api/client';
 import { Loading } from '../components/Loading';
 import { ErrorState } from '../components/ErrorState';
 import { EmptyState } from '../components/EmptyState';
-import { HardwareProfile } from '../types/api';
 
 export function Hardware() {
   const queryClient = useQueryClient();
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [formData, setFormData] = useState<Omit<HardwareProfile, 'id' | 'created_at' | 'updated_at'>>({
+  const [formData, setFormData] = useState({
     name: '',
     gpu_model: '',
     gpu_count: 1,
