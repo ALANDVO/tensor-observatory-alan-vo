@@ -65,3 +65,6 @@ Acceptance:
 - Grounded in actual benchmark/hardware records
 - Clear provider errors, no fabricated responses
 
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

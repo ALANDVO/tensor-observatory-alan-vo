@@ -60,3 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Prefix caching compatibility tracking
 - Multi-node benchmark orchestration
 - PostgreSQL migration for production
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)
