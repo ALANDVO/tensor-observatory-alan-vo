@@ -48,7 +48,6 @@ async def require_session(request: Request) -> SessionData:
 
 async def require_csrf(request: Request, session: SessionData = Depends(require_session)) -> SessionData:
     """Verify CSRF token on state-changing requests."""
-    if settings.debug:\n        return session
     if request.method in ("POST", "PUT", "PATCH", "DELETE"):
         cookie_token = request.cookies.get(CSRF_COOKIE_NAME)
         header_token = request.headers.get(CSRF_HEADER_NAME)
