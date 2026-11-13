@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 
 from app.core.database import get_db
-from app.api.deps import require_operator, require_admin, require_viewer, require_csrf, get_client_ip, get_user_agent
+from app.api.deps import require_operator, require_admin, require_viewer, get_client_ip, get_user_agent
 from app.models import HardwareProfile, ModelHardwareCompatibility, Model, AuditLog, log_audit
 from app.core.auth import SessionData
 
@@ -57,7 +57,6 @@ async def create_hardware(
     hardware_data: HardwareCreate,
     request: Request,
     session: SessionData = Depends(require_operator),
-    csrf: SessionData = Depends(require_csrf),
     db: AsyncSession = Depends(get_db),
 ):
     """Create a hardware profile."""
@@ -127,7 +126,6 @@ async def create_compatibility(
     compat_data: CompatibilityCreate,
     request: Request,
     session: SessionData = Depends(require_operator),
-    csrf: SessionData = Depends(require_csrf),
     db: AsyncSession = Depends(get_db),
 ):
     """Create a compatibility record."""
