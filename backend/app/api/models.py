@@ -10,7 +10,7 @@ import httpx
 import json
 
 from app.core.database import get_db
-from app.api.deps import require_operator, require_admin, require_viewer, get_client_ip, get_user_agent
+from app.api.deps import require_operator, require_admin, require_viewer, require_csrf, get_client_ip, get_user_agent
 from app.models import Model, AuditLog, log_audit
 from app.core.auth import SessionData
 
@@ -121,6 +121,7 @@ async def create_model(
     model_data: ModelCreate,
     request: Request,
     session: SessionData = Depends(require_operator),
+    csrf: SessionData = Depends(require_csrf),
     db: AsyncSession = Depends(get_db),
 ):
     """Create a new model."""
@@ -148,6 +149,7 @@ async def update_model(
     model_id: int,
     model_data: ModelUpdate,
     request: Request,
+    csrf: SessionData = Depends(require_csrf),
     session: SessionData = Depends(require_operator),
     db: AsyncSession = Depends(get_db),
 ):
@@ -195,6 +197,7 @@ async def delete_model(
 
 @router.post("/import", response_model=ModelResponse, status_code=status.HTTP_201_CREATED)
 async def import_model(
+    csrf: SessionData = Depends(require_csrf),
     request: Request,
     session: SessionData = Depends(require_operator),
     db: AsyncSession = Depends(get_db),

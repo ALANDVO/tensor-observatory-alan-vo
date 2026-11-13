@@ -11,7 +11,7 @@ import time
 import random
 
 from app.core.database import get_db
-from app.api.deps import require_operator, require_admin, require_viewer, get_client_ip, get_user_agent
+from app.api.deps import require_operator, require_admin, require_viewer, require_csrf, get_client_ip, get_user_agent
 from app.models import Benchmark, Model, AuditLog, log_audit
 from app.core.auth import SessionData
 
@@ -176,6 +176,7 @@ async def create_benchmark(
     benchmark_data: BenchmarkCreate,
     request: Request,
     session: SessionData = Depends(require_operator),
+    csrf: SessionData = Depends(require_csrf),
     db: AsyncSession = Depends(get_db),
 ):
     """Create a new benchmark."""
@@ -208,6 +209,7 @@ async def create_benchmark(
 async def run_benchmark(
     benchmark_id: int,
     request: Request,
+    csrf: SessionData = Depends(require_csrf),
     session: SessionData = Depends(require_operator),
     db: AsyncSession = Depends(get_db),
 ):
@@ -244,6 +246,7 @@ async def run_benchmark(
 @router.delete("/{benchmark_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_benchmark(
     benchmark_id: int,
+    csrf: SessionData = Depends(require_csrf),
     request: Request,
     session: SessionData = Depends(require_admin),
     db: AsyncSession = Depends(get_db),
