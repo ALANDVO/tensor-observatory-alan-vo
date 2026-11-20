@@ -27,13 +27,17 @@ Tests: `backend/tests/test_all.py`
 
 ### model-registry — Model registry with metadata, search, and import workflow
 
-Status: planned
+Status: done
 
 Acceptance:
 - API: CRUD for model records (name, architecture, quantization, hardware profile)
 - UI: Model list with filtering, detail view, create/import modal
 - Import from HuggingFace Hub (metadata only, no weights)
 - Persistent storage with audit log
+
+Implementation: `backend/app/api/models.py - CRUD endpoints (list, get, create, update, delete, import)`, `backend/app/models/__init__.py - Model ORM with name, architecture, quantization, hardware_profile, huggingface_repo, description, config_json, is_active`, `frontend/src/pages/Models.tsx - Model list with filtering, create/import modals, delete`
+
+Tests: `backend/tests/test_all.py - TestModelsIsActive (is_active filter tests)`
 
 ### inference-benchmark — Inference benchmark engine (offline, deterministic)
 
