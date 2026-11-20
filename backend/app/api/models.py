@@ -66,6 +66,7 @@ async def list_models(
     search: Optional[str] = Query(None),
     architecture: Optional[str] = Query(None),
     quantization: Optional[str] = Query(None),
+    is_active: Optional[bool] = Query(None),
     page: int = Query(1, ge=1),
     limit: int = Query(20, ge=1, le=100),
     session: SessionData = Depends(require_viewer),
@@ -84,6 +85,8 @@ async def list_models(
         query = query.where(Model.architecture == architecture)
     if quantization:
         query = query.where(Model.quantization == quantization)
+    if is_active is not None:
+        query = query.where(Model.is_active == is_active)
     
     # Count total
     count_query = select(func.count()).select_from(query.subquery())

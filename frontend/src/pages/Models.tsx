@@ -11,6 +11,7 @@ export function Models() {
   const [search, setSearch] = useState('');
   const [archFilter, setArchFilter] = useState('');
   const [quantFilter, setQuantFilter] = useState('');
+  const [isActiveFilter, setIsActiveFilter] = useState(true);
   const [page, setPage] = useState(1);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
@@ -25,8 +26,8 @@ export function Models() {
   const [importRepo, setImportRepo] = useState('');
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['models', { search, archFilter, quantFilter, page }],
-    queryFn: () => getModels({ search, architecture: archFilter, quantization: quantFilter, page, limit: 20 }),
+    queryKey: ['models', { search, archFilter, quantFilter, isActiveFilter, page }],
+    queryFn: () => getModels({ search, architecture: archFilter, quantization: quantFilter, is_active: isActiveFilter ? 'true' : 'false', page, limit: 20 }),
   });
 
   const createMutation = useMutation({
@@ -131,6 +132,15 @@ export function Models() {
           >
             <option value="">All Quantizations</option>
             {quantizations.map(q => <option key={q} value={q}>{q}</option>)}
+          </select>
+          <select
+            value={isActiveFilter ? 'true' : 'false'}
+            onChange={(e) => setIsActiveFilter(e.target.value === 'true')}
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          >
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+            <option value="">All</option>
           </select>
         </div>
       </div>

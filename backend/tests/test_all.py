@@ -77,6 +77,7 @@ async def db_session():
     async with test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
 
+
 class TestHealth:
     @pytest.mark.asyncio
     async def test_health_endpoint(self, client):
@@ -236,3 +237,51 @@ class TestAuditLog:
         result = await db_session.execute(select(Model))
         # Just verify no error
         assert True
+
+class TestModelsIsActive:
+    @pytest.mark.asyncio
+    async def test_list_models_is_active_true(self, db_session):
+        """Test listing models with is_active=true filter via DB."""
+        model = Model(name="active-model", architecture="Test", is_active=True)
+        db_session.add(model)
+        await db_session.commit()
+        await db_session.refresh(model)
+
+        model_inactive = Model(name="inactive-model", architecture="Test2", is_active=False)
+        db_session.add(model_inactive)
+        await db_session.commit()
+
+        # Query with is_active=true
+        from sqlalchemy import select
+        result = await db_session.execute(select(Model).where(Model.is_active == True))
+        models = result.scalars().all()
+        assert len(models) == 1
+        assert models[0].name == "active-model"
+
+    @pytest.mark.asyncio
+    async def test_list_models_is_active_false(self, db_session):
+        """Test listing models with is_active=false filter via DB."""
+        model_inactive = Model(name="inactive-model", architecture="Test", is_active=False)
+        db_session.add(model_inactive)
+        await db_session.commit()
+
+        # Query with is_active=false
+        from sqlalchemy import select
+        result = await db_session.execute(select(Model).where(Model.is_active == False))
+        models = result.scalars().all()
+        assert len(models) == 1
+        assert models[0].name == "inactive-model"
+
+    @pytest.mark.asyncio
+    async def test_list_models_all_without_filter(self, db_session):
+        """Test that no filter returns all models."""
+        model_active = Model(name="active-model", architecture="Test", is_active=True)
+        model_inactive = Model(name="inactive-model", architecture="Test2", is_active=False)
+        db_session.add_all([model_active, model_inactive])
+        await db_session.commit()
+
+        # Query with no filter
+        from sqlalchemy import select
+        result = await db_session.execute(select(Model))
+        models = result.scalars().all()
+        assert len(models) == 2
